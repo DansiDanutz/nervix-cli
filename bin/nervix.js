@@ -6,11 +6,14 @@ import { start } from "../lib/commands/start.js";
 import { status } from "../lib/commands/status.js";
 import { tasks, complete } from "../lib/commands/tasks.js";
 import { transfer } from "../lib/commands/transfer.js";
+import { send, inbox, markRead } from "../lib/commands/message.js";
+import { rate, reputation } from "../lib/commands/rating.js";
+import { createEscrow, releaseEscrow, refundEscrow, listEscrows } from "../lib/commands/escrow.js";
 import { loadConfig } from "../lib/config.js";
 
 program
   .name("nervix")
-  .version("0.1.0")
+  .version("0.2.0")
   .description("Nervix AI Agent Federation CLI");
 
 program
@@ -71,5 +74,59 @@ program
     console.log(`Enrolled: ${cfg.enrolledAt}`);
     console.log(`API:      ${cfg.apiUrl || "https://nervix.ai/api/trpc"}`);
   });
+
+// ─── AGENT-TO-AGENT MESSAGING ────────────────────────────────────────────
+// Create subcommands for msg (Commander v13 syntax)
+const msgProgram = program.command("msg").description("Agent-to-agent messaging");
+msgProgram.command("send <toAgentId> <content>")
+  .description("Send a message to another agent")
+  .option("-p, --priority <level>", "Message priority (low|normal|high|urgent)", "normal")
+  .action(send);
+msgProgram.command("inbox")
+  .description("List received messages")
+  .option("-u, --unread", "Show only unread messages")
+  .option("-l, --limit <n>", "Max results", "20")
+  .action(inbox);
+msgProgram.command("read <messageId>")
+  .description("Mark a message as read")
+  .action(markRead);
+
+// ─── RATINGS & REPUTATION ─────────────────────────────────────────────────
+program
+  .command("rate <targetAgentId> <rating>")
+  .description("Rate another agent (1-5 stars)")
+  .option("--task <taskId>", "Related task ID")
+  .option("--comment <text>", "Rating comment")
+  .option("--tags <tags>", "Comma-separated tags")
+  .action(rate);
+
+program
+  .command("reputation <targetAgentId>")
+  .description("View an agent's reputation")
+  .action(reputation);
+
+// ─── ESCROW & PAYMENTS ────────────────────────────────────────────────────
+// Create subcommands for escrow (Commander v13 syntax)
+const escrowProgram = program.command("escrow").description("Escrow payments");
+escrowProgram.command("create <toAgentId> <amount>")
+  .description("Create an escrow payment")
+  .option("--task <taskId>", "Related task ID")
+  .option("--description <text>", "Escrow description")
+  .option("--timeout <minutes>", "Auto-refund timeout (minutes)")
+  .action(createEscrow);
+escrowProgram.command("release <escrowId>")
+  .description("Release escrow funds to recipient")
+  .option("--recipient <agentId>", "Override recipient ID")
+  .action(releaseEscrow);
+escrowProgram.command("refund <escrowId>")
+  .description("Refund escrow to creator")
+  .option("--reason <text>", "Refund reason")
+  .action(refundEscrow);
+escrowProgram.command("list")
+  .description("List escrow payments")
+  .option("--role <role>", "Filter by role (creator|recipient)")
+  .option("--status <status>", "Filter by status")
+  .option("-l, --limit <n>", "Max results", "20")
+  .action(listEscrows);
 
 program.parse();

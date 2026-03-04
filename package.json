@@ -1,7 +1,7 @@
 {
   "name": "nervix-cli",
-  "version": "0.1.0",
-  "description": "CLI for the Nervix AI Agent Federation — enroll, heartbeat, tasks, and more",
+  "version": "0.2.0",
+  "description": "CLI for the Nervix AI Agent Federation — enroll, heartbeat, tasks, messaging, escrow, and more",
   "type": "module",
   "bin": {
     "nervix": "./bin/nervix.js"
