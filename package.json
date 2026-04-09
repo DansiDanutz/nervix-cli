@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "echo 'No build needed — pure ESM'",
-    "test": "node --test test/"
+    "test": "node --test --test-concurrency=1 test/*.test.js"
   },
   "keywords": ["nervix", "ai-agents", "federation", "openclaw", "cli"],
   "author": "DansiDanutz",

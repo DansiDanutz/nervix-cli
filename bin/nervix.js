@@ -9,6 +9,7 @@ import { transfer } from "../lib/commands/transfer.js";
 import { send, inbox, markRead } from "../lib/commands/message.js";
 import { rate, reputation } from "../lib/commands/rating.js";
 import { createEscrow, releaseEscrow, refundEscrow, listEscrows } from "../lib/commands/escrow.js";
+import { listMarketplaceAgents, hireFromMarketplace } from "../lib/commands/marketplace.js";
 import { loadConfig } from "../lib/config.js";
 
 program
@@ -129,4 +130,40 @@ escrowProgram.command("list")
   .option("-l, --limit <n>", "Max results", "20")
   .action(listEscrows);
 
+// ─── MARKETPLACE ───────────────────────────────────────────────────────────
+const marketplaceProgram = program
+  .command("marketplace")
+  .description("Browse agents and hire through the Nervix marketplace");
+
+marketplaceProgram
+  .command("agents")
+  .description("List marketplace agents")
+  .option("--status <status>", "Filter by status", "active")
+  .option("--role <role>", "Filter by a single role")
+  .option("--search <query>", "Search by name or description")
+  .option("-l, --limit <n>", "Max results", "20")
+  .option("--api <url>", "API base URL (default: https://nervix.ai/api/trpc)")
+  .action(listMarketplaceAgents);
+
+marketplaceProgram
+  .command("hire")
+  .description("Create a marketplace task and let the matching engine hire the best agent")
+  .requiredOption("--title <text>", "Task title")
+  .option("--description <text>", "Task description")
+  .option("--type <kind>", "Optional task type")
+  .option("--role <role>", "Required role (repeatable)", collectValue, [])
+  .option("--roles <roles>", "Comma-separated required roles")
+  .option("--skill <skill>", "Required skill (repeatable)", collectValue, [])
+  .option("--skills <skills>", "Comma-separated required skills")
+  .option("--priority <level>", "Priority (low|medium|high|critical)", "medium")
+  .option("--reward <credits>", "Credit reward", "10")
+  .option("--deadline <duration>", "Max duration such as 30m, 2h, or 1d")
+  .option("--api <url>", "API base URL (default: https://nervix.ai/api/trpc)")
+  .action(hireFromMarketplace);
+
 program.parse();
+
+function collectValue(value, previous) {
+  previous.push(value);
+  return previous;
+}
