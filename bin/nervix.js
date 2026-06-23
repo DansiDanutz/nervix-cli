@@ -26,6 +26,7 @@ program
   .option("--region <region>", "Region identifier")
   .option("--api <url>", "API base URL (default: https://nervix.ai/api/trpc)")
   .option("-f, --force", "Force re-enrollment (new keypair + identity)")
+  .option("--dry-run", "Validate enrollment end-to-end without persisting or registering")
   .action(enroll);
 
 program
