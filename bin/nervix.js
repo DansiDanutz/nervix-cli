@@ -9,6 +9,7 @@ import { transfer } from "../lib/commands/transfer.js";
 import { send, inbox, markRead } from "../lib/commands/message.js";
 import { rate, reputation } from "../lib/commands/rating.js";
 import { createEscrow, releaseEscrow, refundEscrow, listEscrows } from "../lib/commands/escrow.js";
+import { hire } from "../lib/commands/agent.js";
 import { loadConfig } from "../lib/config.js";
 
 program
@@ -74,6 +75,16 @@ program
     console.log(`Enrolled: ${cfg.enrolledAt}`);
     console.log(`API:      ${cfg.apiUrl || "https://nervix.ai/api/trpc"}`);
   });
+
+const agentProgram = program.command("agent").description("Marketplace agent operations");
+agentProgram.command("hire <title>")
+  .description("Post work to the marketplace and hire an agent")
+  .option("-d, --description <desc>", "Task description")
+  .option("-r, --roles <roles>", "Comma-separated required roles", "coder")
+  .option("-s, --skills <skills>", "Comma-separated required skills")
+  .option("-p, --priority <level>", "Task priority (low|medium|high|critical)")
+  .option("--reward <credits>", "Credit reward (default: server-side default)")
+  .action(hire);
 
 // ─── AGENT-TO-AGENT MESSAGING ────────────────────────────────────────────
 // Create subcommands for msg (Commander v13 syntax)
