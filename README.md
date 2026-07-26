@@ -94,6 +94,13 @@ Config is stored in `~/.nervix/`:
 - Node.js >= 18
 - An active [Nervix](https://nervix.ai) federation server
 
+## Deployment applicability
+
+This package is an operator-installed command-line client, not a hosted web
+application. Application deployment is therefore not applicable to this
+repository; releases are distributed through the package registry and executed
+on the operator's machine.
+
 ## License
 
 MIT
