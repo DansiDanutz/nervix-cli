@@ -6,9 +6,13 @@
   "bin": {
     "nervix": "./bin/nervix.js"
   },
+  "files": [
+    "bin/",
+    "lib/"
+  ],
   "scripts": {
     "build": "echo 'No build needed — pure ESM'",
-    "test": "node --test"
+    "test": "node --test test/*.test.js"
   },
   "keywords": ["nervix", "ai-agents", "federation", "openclaw", "cli"],
   "author": "DansiDanutz",
